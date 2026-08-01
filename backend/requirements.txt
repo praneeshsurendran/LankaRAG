@@ -1,0 +1,51 @@
+# ─────────────────────────────────────────────────────────────────
+#  LankaRAG Backend — Updated Requirements
+#  Includes full test suite dependencies
+# ─────────────────────────────────────────────────────────────────
+
+# ── FastAPI & Server ──────────────────────────────────────────────
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+python-multipart==0.0.9        # File uploads
+
+# ── Settings & Environment ────────────────────────────────────────
+pydantic==2.7.1
+pydantic-settings==2.3.0
+python-dotenv==1.0.1
+
+# ── Database (PostgreSQL) ─────────────────────────────────────────
+sqlalchemy[asyncio]==2.0.30
+asyncpg==0.29.0                # Async PostgreSQL driver
+psycopg2-binary==2.9.9         # Sync driver (for ingest script)
+
+# ── Vector Database (Pinecone) ────────────────────────────────────
+pinecone==4.1.0                # Pinecone SDK v3+ (Serverless)
+
+# ── LangChain & Gemini ────────────────────────────────────────────
+langchain==0.2.5
+langchain-google-genai==1.0.6
+langchain-community==0.2.5
+google-generativeai==0.7.2
+
+# ── Embeddings ────────────────────────────────────────────────────
+sentence-transformers==3.0.1   # all-MiniLM-L6-v2 (dim=384)
+torch==2.3.1
+transformers==4.41.2
+ftfy==6.1.3                    # Required by CLIP tokenizer
+
+# OpenAI CLIP — install separately:
+# pip install git+https://github.com/openai/CLIP.git
+
+# ── Image Processing & HTTP ───────────────────────────────────────
+Pillow==10.3.0
+httpx==0.27.0                  # Async HTTP (replaces blocking requests for image fetch)
+requests==2.32.2               # Used in ingest script
+
+# ── Utilities ─────────────────────────────────────────────────────
+numpy==1.26.4
+tqdm==4.66.4
+
+# ── Testing ───────────────────────────────────────────────────────
+pytest==8.2.2
+pytest-asyncio==0.23.7
+anyio[trio]==4.4.0             # Required by pytest-asyncio
