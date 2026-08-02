@@ -46,6 +46,7 @@ You are a PostgreSQL expert. Generate a safe SELECT query for the question below
 Rules:
 - ONLY SELECT statements. Never INSERT, UPDATE, DELETE, DROP, TRUNCATE, ALTER, CREATE.
 - Query only: tourist_attractions
+- ALWAYS use SELECT * (never select individual columns — the app requires all columns).
 - Return at most {limit} rows (add LIMIT {limit} if not already present).
 - Return ONLY the raw SQL — no markdown fences, no explanation, no trailing semicolon.
 
@@ -112,16 +113,20 @@ async def generate_sql(question: str, row_limit: int = 20) -> str:
 
 
 def _row_to_attraction(row, score: Optional[float] = None) -> AttractionResult:
-    """Convert a raw SQLAlchemy text-query row to an AttractionResult."""
+    """Convert a raw SQLAlchemy text-query row to an AttractionResult.
+    
+    Uses getattr with fallbacks so partial SELECT results don't crash the app.
+    """
+    keys = row._fields if hasattr(row, "_fields") else row.keys()
     return AttractionResult(
-        id=row.id,
-        name=row.name,
-        category=row.category,
-        district=row.district,
-        entrance_fee_usd=row.entrance_fee_usd,
-        difficulty_level=row.difficulty_level,
-        description=row.description,
-        image_url=row.image_url,
+        id=getattr(row, "id", None),
+        name=getattr(row, "name", ""),
+        category=getattr(row, "category", ""),
+        district=getattr(row, "district", ""),
+        entrance_fee_usd=getattr(row, "entrance_fee_usd", None),
+        difficulty_level=getattr(row, "difficulty_level", ""),
+        description=getattr(row, "description", ""),
+        image_url=getattr(row, "image_url", None),
         score=score,
         source="postgres",
     )
@@ -135,14 +140,20 @@ async def run_sql_query(
     """
     Execute a pre-validated SELECT SQL statement and return results.
 
-    Args:
-        sql: A safe SELECT SQL string (pre-validated with is_safe_sql).
-        db: SQLAlchemy async session.
-        top_k: Maximum results to return.
-
-    Returns:
-        List of AttractionResult objects.
+    If the LLM-generated SQL did not select all columns (e.g. SELECT name ...),
+    we wrap it as a subquery to join back the full row from tourist_attractions.
     """
+    # Ensure we always get all columns by wrapping partial queries
+    normalised = sql.strip().upper()
+    if not normalised.startswith("SELECT *"):
+        # Wrap the generated SQL as a subquery to fetch full rows
+        sql = (
+            f"SELECT t.* FROM tourist_attractions t "
+            f"WHERE t.name IN (SELECT name FROM ({sql}) AS sub) "
+            f"LIMIT {top_k}"
+        )
+        logger.info("Rewrote partial SQL to full-row fetch: %s", sql)
+
     result = await db.execute(text(sql))
     rows = result.fetchall()
     return [_row_to_attraction(row) for row in rows[:top_k]]
