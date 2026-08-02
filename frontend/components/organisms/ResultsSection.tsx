@@ -16,14 +16,14 @@ export function ResultsSection({ title, icon, items, colorClass, className }: Re
 
   return (
     <section className={cn("space-y-4", className)}>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2.5">
         <span className="text-lg flex items-center justify-center">{icon}</span>
-        <h3 className={cn("text-sm font-semibold", colorClass)}>{title}</h3>
-        <span className="text-xs text-white/30">({items.length} results)</span>
+        <h3 className={cn("text-sm font-semibold font-[family-name:var(--font-outfit)]", colorClass)}>{title}</h3>
+        <span className="text-xs text-[var(--text-faint)]">({items.length} results)</span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {items.map((item, i) => (
-          <AttractionCard key={`${item.source}-${item.id}`} attraction={item} rank={i + 1} />
+          <AttractionCard key={`${item.source}-${item.id}`} attraction={item} rank={i + 1} index={i} />
         ))}
       </div>
     </section>

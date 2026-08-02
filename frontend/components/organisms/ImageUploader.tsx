@@ -104,10 +104,10 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
 
   return (
     <div className="space-y-3">
-      <label className="text-xs font-medium text-[#12543e] uppercase tracking-wider flex justify-between items-center">
+      <label className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-widest flex justify-between items-center">
         <span>Image Input</span>
-        <span className="text-[10px] text-[#377d64] lowercase normal-case">
-          (Direct Image URL or Upload)
+        <span className="text-[10px] text-[var(--text-faint)] lowercase normal-case font-normal">
+          Direct URL or upload
         </span>
       </label>
 
@@ -121,18 +121,18 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
           }
         }}
         placeholder="Paste direct image link (e.g. https://.../photo.jpg)"
-        icon={<LinkIcon className="w-4 h-4 text-[#377d64]" />}
+        icon={<LinkIcon className="w-4 h-4" />}
         disabled={disabled || isBase64}
-        className={cn(isBase64 && "opacity-60 italic text-[#377d64]")}
+        className={cn(isBase64 && "opacity-60 italic")}
       />
 
       {/* OR Divider if no image present */}
       {!value && (
         <>
-          <div className="flex items-center gap-2">
-            <div className="flex-1 h-px bg-[#a9e2cc]" />
-            <span className="text-[10px] font-semibold text-[#377d64]">OR UPLOAD</span>
-            <div className="flex-1 h-px bg-[#a9e2cc]" />
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-[var(--border)]" />
+            <span className="text-[10px] font-semibold text-[var(--text-faint)] uppercase tracking-wider">or upload</span>
+            <div className="flex-1 h-px bg-[var(--border)]" />
           </div>
 
           {/* Upload Drag & Drop Zone */}
@@ -141,17 +141,17 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             className={cn(
-              "relative flex flex-col items-center justify-center w-full h-28 border border-dashed rounded-lg cursor-pointer transition-colors",
-              disabled ? "opacity-50 cursor-not-allowed border-[#a9e2cc]" : "hover:bg-[#d4f2e6]/50 hover:border-[#1b8867]",
-              isDragging ? "border-[#1b8867] bg-[#d4f2e6]" : "border-[#a9e2cc] bg-white"
+              "relative flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200",
+              disabled ? "opacity-50 cursor-not-allowed border-[var(--border)]" : "hover:bg-[var(--primary-surface)] hover:border-[var(--primary)]",
+              isDragging ? "border-[var(--primary)] bg-[var(--primary-light)]" : "border-[var(--border)] bg-[var(--bg-surface)]"
             )}
           >
             <div className="flex flex-col items-center justify-center py-4 text-center">
-              <UploadCloud className={cn("w-6 h-6 mb-1.5", isDragging ? "text-[#157357]" : "text-[#377d64]")} />
-              <p className="mb-0.5 text-xs text-[#12543e]">
-                <span className="font-semibold text-[#062b20]">Click to upload</span> or drag image
+              <UploadCloud className={cn("w-6 h-6 mb-2", isDragging ? "text-[var(--primary)]" : "text-[var(--text-faint)]")} />
+              <p className="mb-0.5 text-xs text-[var(--text-secondary)]">
+                <span className="font-semibold text-[var(--text-primary)]">Click to upload</span> or drag image
               </p>
-              <p className="text-[10px] text-[#377d64]">PNG, JPG, WEBP up to 5MB</p>
+              <p className="text-[10px] text-[var(--text-faint)]">PNG, JPG, WEBP up to 5MB</p>
             </div>
             <input
               type="file"
@@ -166,10 +166,10 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
 
       {/* Image Preview Box when value exists */}
       {Boolean(value) && (
-        <div className="relative rounded-lg overflow-hidden border border-[#a9e2cc] bg-[#d4f2e6]/40 p-2 space-y-2">
+        <div className="relative rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--bg-elevated)] p-2 space-y-2">
           <div className="flex items-center justify-between px-1 text-xs">
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#062b20]">
-              <ImageIcon className="w-3.5 h-3.5 text-[#1b8867]" />
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-[var(--text-primary)]">
+              <ImageIcon className="w-3.5 h-3.5 text-[var(--primary)]" />
               {isBase64 ? "Uploaded Image" : "URL Image Preview"}
             </span>
             <Button
@@ -177,24 +177,24 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
               size="sm"
               onClick={handleClear}
               disabled={disabled}
-              className="h-6 px-2 text-[11px] text-[#8a2b2b] hover:text-[#701e1e] hover:bg-[#fdeded]"
+              className="h-6 px-2 text-[11px] text-[var(--danger)] hover:text-[#991b1b] hover:bg-[var(--danger-light)]"
             >
               <X className="w-3 h-3 mr-1" /> Remove
             </Button>
           </div>
 
-          <div className="relative h-40 w-full rounded-md overflow-hidden bg-white border border-[#a9e2cc] flex items-center justify-center">
+          <div className="relative h-40 w-full rounded-lg overflow-hidden bg-[var(--bg-surface)] border border-[var(--border)] flex items-center justify-center">
             {imageLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10 text-xs text-[#12543e]">
-                <Loader2 className="w-4 h-4 animate-spin text-[#1b8867] mr-2" /> Loading preview...
+              <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10 text-xs text-[var(--text-muted)]">
+                <Loader2 className="w-4 h-4 animate-spin text-[var(--primary)] mr-2" /> Loading preview...
               </div>
             )}
 
             {imageError ? (
-              <div className="flex flex-col items-center justify-center text-center p-3 text-xs text-[#8a2b2b]">
-                <AlertCircle className="w-5 h-5 mb-1.5 text-[#8a2b2b]" />
-                <span className="font-semibold text-[#8a2b2b]">Webpage link detected instead of direct image link</span>
-                <span className="text-[11px] text-[#377d64] mt-1 max-w-xs leading-tight">
+              <div className="flex flex-col items-center justify-center text-center p-3 text-xs text-[var(--danger)]">
+                <AlertCircle className="w-5 h-5 mb-1.5" />
+                <span className="font-semibold">Webpage link detected instead of direct image link</span>
+                <span className="text-[11px] text-[var(--text-muted)] mt-1 max-w-xs leading-tight">
                   Right-click an image on that webpage & choose <strong>&ldquo;Copy Image Address&rdquo;</strong>, or use the file uploader below.
                 </span>
               </div>
@@ -216,8 +216,8 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
       )}
 
       {error && (
-        <p className="text-xs text-[#8a2b2b] mt-1 flex items-center gap-1">
-          <AlertCircle className="w-3.5 h-3.5 text-[#8a2b2b]" /> {error}
+        <p className="text-xs text-[var(--danger)] mt-1 flex items-center gap-1">
+          <AlertCircle className="w-3.5 h-3.5" /> {error}
         </p>
       )}
     </div>

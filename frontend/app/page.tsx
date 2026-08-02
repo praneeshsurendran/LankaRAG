@@ -9,6 +9,17 @@ import { useImageQuery } from "@/hooks/useImageQuery";
 import { useHybridQuery } from "@/hooks/useHybridQuery";
 import type { QueryType } from "@/lib/api/types";
 import { Typography } from "@/components/atoms/Typography";
+import {
+  Palmtree,
+  Waves,
+  Droplets,
+  Landmark,
+  TreePine,
+  Database,
+  Brain,
+  Eye,
+  Sparkles,
+} from "lucide-react";
 
 const INITIAL_SEARCH_STATE: SearchPanelState = {
   queryType: "hybrid",
@@ -19,28 +30,18 @@ const INITIAL_SEARCH_STATE: SearchPanelState = {
 };
 
 const STATS = [
-  { label: "Beaches", count: 5, emoji: "🏖️" },
-  { label: "Waterfalls", count: 5, emoji: "💧" },
-  { label: "Historical", count: 5, emoji: "🏛️" },
-  { label: "Parks", count: 5, emoji: "🦁" },
-  { label: "Temples", count: 5, emoji: "🕌" },
+  { label: "Beaches", count: 5, icon: Waves },
+  { label: "Waterfalls", count: 5, icon: Droplets },
+  { label: "Historical", count: 5, icon: Landmark },
+  { label: "Parks", count: 5, icon: TreePine },
+  { label: "Temples", count: 5, icon: Palmtree },
 ];
 
-function BackgroundDecor() {
-  return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden">
-      <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-[#1b8867]/5 blur-3xl" />
-      <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] rounded-full bg-[#1b8867]/5 blur-3xl" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[#1b8867]/5 blur-3xl" />
-    </div>
-  );
-}
-
 const PIPELINE_BADGES = [
-  { icon: "🗄️", label: "PostgreSQL" },
-  { icon: "🧠", label: "Pinecone" },
-  { icon: "🖼️", label: "CLIP Vision" },
-  { icon: "✨", label: "Gemini AI" },
+  { icon: Database, label: "PostgreSQL" },
+  { icon: Brain, label: "Pinecone" },
+  { icon: Eye, label: "CLIP Vision" },
+  { icon: Sparkles, label: "Gemini AI" },
 ];
 
 export default function Home() {
@@ -142,90 +143,112 @@ export default function Home() {
   const activeError = structuredQ.error || semanticQ.error || imageQ.error || hybridQ.error;
 
   return (
-    <>
-      <BackgroundDecor />
+    <div className="relative min-h-screen flex flex-col">
+      {/* Gradient mesh background — CSS only, no blob divs */}
+      <div
+        className="fixed inset-0 pointer-events-none -z-10"
+        style={{
+          background: `
+            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(42,157,143,0.06) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 40% at 100% 50%, rgba(232,145,58,0.04) 0%, transparent 50%),
+            radial-gradient(ellipse 50% 60% at 0% 80%, rgba(42,157,143,0.04) 0%, transparent 50%),
+            var(--bg-base)
+          `,
+        }}
+      />
 
-      <div className="relative z-10 min-h-screen flex flex-col bg-[#edf8f3] text-[#062b20]">
-        <header className="border-b border-[#a9e2cc] bg-white/90 sticky top-0 z-20 backdrop-blur-sm">
-          <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <div className="w-9 h-9 rounded-xl bg-[#1b8867] flex items-center justify-center text-xl shadow-sm text-white">
-                🌴
-              </div>
-              <div>
-                <h1 className="text-base font-bold text-[#062b20] leading-none">
-                  Lanka<span className="text-[#1b8867]">RAG</span>
-                </h1>
-                <p className="text-[10px] text-[#377d64] leading-none mt-0.5">
-                  Multimodal AI Travel Guide
-                </p>
-              </div>
+      {/* ─── Header ─── */}
+      <header className="border-b border-[var(--border)] bg-[var(--bg-surface)]/80 sticky top-0 z-20 backdrop-blur-xl">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] flex items-center justify-center shadow-sm">
+              <Palmtree className="w-4 h-4 text-white" />
             </div>
-            <div className="hidden md:flex items-center gap-2">
-              {PIPELINE_BADGES.map((b) => (
-                <span key={b.label} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-[#a9e2cc] text-xs text-[#12543e]">
-                  {b.icon} {b.label}
-                </span>
-              ))}
-            </div>
-          </div>
-        </header>
-
-        <section className="border-b border-[#a9e2cc]/80 bg-white">
-          <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-10 text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#d4f2e6] border border-[#a9e2cc] text-xs text-[#062b20] mb-5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#1b8867] animate-pulse" />
-              25 attractions · 5 categories · 4 query pipelines
-            </div>
-
-            <Typography variant="h1" className="mb-3 leading-tight text-[#062b20]">
-              Your Intelligent Guide to <span className="text-[#1b8867]">Sri Lanka</span>
-            </Typography>
-            <Typography variant="muted" className="max-w-xl mx-auto text-[#377d64]">
-              Search by structured facts, semantic meaning, visual similarity,
-              or let the AI synthesize everything for you.
-            </Typography>
-
-            <div className="flex flex-wrap items-center justify-center gap-3 mt-7">
-              {STATS.map((s) => (
-                <div key={s.label} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-[#a9e2cc] shadow-sm">
-                  <span>{s.emoji}</span>
-                  <span className="text-sm font-semibold text-[#062b20]">{s.count}</span>
-                  <span className="text-xs text-[#377d64]">{s.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <main className="flex-1 max-w-screen-xl mx-auto w-full px-4 sm:px-6 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
-            <div className="lg:sticky lg:top-20">
-              <SearchPanel
-                state={searchState}
-                onStateChange={handleStateChange}
-                onSubmit={handleSubmit}
-                isLoading={isLoading}
-              />
-            </div>
-
             <div>
-              <ResultsPanel
-                status={overallStatus}
-                queryType={activeQueryType}
-                error={activeError}
-                aiResponse={consolidated.aiResponse}
-                generatedSql={consolidated.generatedSql}
-                allResults={consolidated.allResults}
-                structuredResults={consolidated.structuredResults}
-                semanticResults={consolidated.semanticResults}
-                imageResults={consolidated.imageResults}
-                totalSources={consolidated.totalSources}
-              />
+              <h1 className="text-[15px] font-bold text-[var(--text-primary)] leading-none font-[family-name:var(--font-outfit)]">
+                Lanka<span className="text-[var(--primary)]">RAG</span>
+              </h1>
+              <p className="text-[10px] text-[var(--text-muted)] leading-none mt-0.5">
+                Multimodal AI Travel Guide
+              </p>
             </div>
           </div>
-        </main>
-      </div>
-    </>
+          <div className="hidden md:flex items-center gap-1.5">
+            {PIPELINE_BADGES.map((b) => {
+              const Icon = b.icon;
+              return (
+                <span key={b.label} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] text-[var(--text-muted)] font-medium">
+                  <Icon className="w-3.5 h-3.5 text-[var(--text-faint)]" />
+                  {b.label}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+      </header>
+
+      {/* ─── Hero Section ─── */}
+      <section className="border-b border-[var(--border)]">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--primary-light)] border border-[var(--primary)]/15 text-xs text-[var(--primary-dark)] font-medium mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] animate-pulse-glow" />
+            25 attractions · 5 categories · 4 query pipelines
+          </div>
+
+          <Typography variant="h1" className="mb-4 leading-[1.15]">
+            Your Intelligent Guide to{" "}
+            <span className="text-[var(--primary)] relative">
+              Sri Lanka
+            </span>
+          </Typography>
+          <Typography variant="muted" className="max-w-lg mx-auto text-base leading-relaxed">
+            Search by structured facts, semantic meaning, visual similarity,
+            or let the AI synthesize everything for you.
+          </Typography>
+
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-8">
+            {STATS.map((s) => {
+              const Icon = s.icon;
+              return (
+                <div key={s.label} className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[var(--bg-surface)] border border-[var(--border)] shadow-sm hover:shadow-md hover:border-[var(--border-strong)] transition-all duration-200">
+                  <Icon className="w-4 h-4 text-[var(--primary)]" />
+                  <span className="text-sm font-semibold text-[var(--text-primary)] tabular-nums">{s.count}</span>
+                  <span className="text-xs text-[var(--text-muted)]">{s.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Main Content ─── */}
+      <main className="flex-1 max-w-screen-xl mx-auto w-full px-4 sm:px-6 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6 items-start">
+          <div className="lg:sticky lg:top-[72px]">
+            <SearchPanel
+              state={searchState}
+              onStateChange={handleStateChange}
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
+            />
+          </div>
+
+          <div>
+            <ResultsPanel
+              status={overallStatus}
+              queryType={activeQueryType}
+              error={activeError}
+              aiResponse={consolidated.aiResponse}
+              generatedSql={consolidated.generatedSql}
+              allResults={consolidated.allResults}
+              structuredResults={consolidated.structuredResults}
+              semanticResults={consolidated.semanticResults}
+              imageResults={consolidated.imageResults}
+              totalSources={consolidated.totalSources}
+            />
+          </div>
+        </div>
+      </main>
+    </div>
   );
 }

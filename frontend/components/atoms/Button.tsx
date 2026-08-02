@@ -15,16 +15,20 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const variants = {
-      primary: "bg-[#1b8867] text-white hover:bg-[#157357] font-semibold border border-[#157357] shadow-sm",
-      secondary: "bg-[#d4f2e6] text-[#062b20] hover:bg-[#c3ecd9] border border-[#a9e2cc]",
-      outline: "border border-[#a9e2cc] text-[#062b20] hover:bg-[#d4f2e6]",
-      ghost: "text-[#12543e] hover:text-[#062b20] hover:bg-[#d4f2e6]",
+      primary:
+        "bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] font-semibold border border-[var(--primary-dark)] shadow-[0_1px_2px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.12)]",
+      secondary:
+        "bg-[var(--bg-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-inset)] border border-[var(--border)]",
+      outline:
+        "border border-[var(--border)] text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] hover:border-[var(--border-strong)]",
+      ghost:
+        "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)]",
     };
 
     const sizes = {
-      sm: "h-8 px-3 text-xs rounded-md",
+      sm: "h-8 px-3 text-xs rounded-lg",
       md: "h-9 px-4 py-2 text-sm rounded-lg",
-      lg: "h-11 px-5 py-2.5 text-sm rounded-lg",
+      lg: "h-11 px-5 py-2.5 text-sm rounded-lg font-semibold",
     };
 
     return (
@@ -32,7 +36,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={cn(
-          "inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#1b8867] disabled:opacity-50 disabled:pointer-events-none",
+          "inline-flex items-center justify-center font-medium transition-all duration-200",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]",
+          "disabled:opacity-50 disabled:pointer-events-none",
+          "active:scale-[0.98]",
           variants[variant],
           sizes[size],
           className

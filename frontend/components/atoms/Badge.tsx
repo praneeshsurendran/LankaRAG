@@ -16,14 +16,25 @@ export function Badge({
   ...props
 }: BadgeProps) {
   const variants = {
-    default: "bg-[#d4f2e6] text-[#0a382a] border-[#a9e2cc]",
-    structured: "bg-[#d4f2e6] text-[#0a382a] border-[#a9e2cc]",
-    semantic: "bg-[#d4f2e6] text-[#0a382a] border-[#a9e2cc]",
-    image: "bg-[#d4f2e6] text-[#0a382a] border-[#a9e2cc]",
-    hybrid: "bg-[#1b8867]/20 text-[#062b20] border-[#1b8867]/40",
-    success: "bg-[#d4f2e6] text-[#0a382a] border-[#a9e2cc]",
-    warning: "bg-[#d4f2e6] text-[#0a382a] border-[#a9e2cc]",
-    danger: "bg-[#fdeded] text-[#8a2b2b] border-[#f8c4c4]",
+    default: "bg-[var(--bg-elevated)] text-[var(--text-secondary)] border-[var(--border)]",
+    structured: "bg-[var(--structured-light)] text-[#1e40af] border-[var(--structured-border)]",
+    semantic: "bg-[var(--semantic-light)] text-[#5b21b6] border-[var(--semantic-border)]",
+    image: "bg-[var(--image-light)] text-[#c2410c] border-[var(--image-border)]",
+    hybrid: "bg-[var(--hybrid-light)] text-[#a16207] border-[var(--hybrid-border)]",
+    success: "bg-[var(--success-light)] text-[#166534] border-[#bbf7d0]",
+    warning: "bg-[var(--warning-light)] text-[#92400e] border-[#fde68a]",
+    danger: "bg-[var(--danger-light)] text-[#991b1b] border-[var(--danger-border)]",
+  };
+
+  const pulseColors: Record<string, string> = {
+    default: "bg-[var(--text-muted)]",
+    structured: "bg-[var(--structured-hue)]",
+    semantic: "bg-[var(--semantic-hue)]",
+    image: "bg-[var(--image-hue)]",
+    hybrid: "bg-[var(--hybrid-hue)]",
+    success: "bg-[var(--success)]",
+    warning: "bg-[var(--warning)]",
+    danger: "bg-[var(--danger)]",
   };
 
   const sizes = {
@@ -34,7 +45,7 @@ export function Badge({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1.5 font-medium rounded-md border",
+        "inline-flex items-center gap-1.5 font-medium rounded-full border",
         variants[variant],
         sizes[size],
         className
@@ -44,7 +55,8 @@ export function Badge({
       {pulse && (
         <span
           className={cn(
-            "rounded-full bg-[#1b8867] opacity-90 animate-pulse",
+            "rounded-full opacity-90 animate-pulse",
+            pulseColors[variant] || pulseColors.default,
             size === "sm" ? "w-1.5 h-1.5" : "w-2 h-2"
           )}
         />

@@ -31,7 +31,7 @@ export function SearchBar({
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-xs font-medium text-[#12543e] uppercase tracking-wider block">
+      <label className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-widest block">
         {isHybrid ? "Your Question" : "Search Query"}
       </label>
       <div className="relative">
@@ -43,14 +43,14 @@ export function SearchBar({
           className="pr-12"
           disabled={disabled}
         />
-        <div className="absolute right-2 bottom-2">
+        <div className="absolute right-2.5 bottom-2.5">
           <Button
             size="sm"
             onClick={onSubmit}
             isLoading={isLoading}
             disabled={!query.trim() || disabled}
             variant="primary"
-            className="w-7 h-7 p-0 rounded-md"
+            className="w-7 h-7 p-0 rounded-lg"
           >
             {isHybrid ? <Send className="w-3.5 h-3.5 text-white" /> : <Search className="w-3.5 h-3.5 text-white" />}
           </Button>

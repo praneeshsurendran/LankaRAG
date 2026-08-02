@@ -1,24 +1,66 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────────
-   LankaRAG Design System
-   Theme: Light mode using rich, darker shades of #2bc798
+   LankaRAG Design System v2
+   Direction: "Warm Modern Travel" — editorial, premium, alive
    ───────────────────────────────────────────────────────────────── */
 
 @layer base {
   :root {
-    --bg-base: #edf8f3;
+    /* Surfaces */
+    --bg-base: #faf8f5;
     --bg-surface: #ffffff;
-    --bg-elevated: #d9f3e7;
-    --border: #a9e2cc;
-    --border-strong: #78d2b0;
-    --text-primary: #062b20;
-    --text-secondary: #12543e;
-    --text-muted: #377d64;
-    --primary: #1b8867;
-    --primary-dark: #157357;
-    --primary-darker: #0d543f;
-    --primary-light: #d4f2e6;
+    --bg-elevated: #f4f1ec;
+    --bg-inset: #edeae4;
+
+    /* Borders */
+    --border: #e2ddd5;
+    --border-strong: #c9c2b8;
+    --border-focus: #2a9d8f;
+
+    /* Text */
+    --text-primary: #1a1a1a;
+    --text-secondary: #4a4540;
+    --text-muted: #8a8279;
+    --text-faint: #b0a99f;
+
+    /* Primary — Teal-emerald */
+    --primary: #2a9d8f;
+    --primary-hover: #238578;
+    --primary-dark: #1b6b60;
+    --primary-light: #e6f5f2;
+    --primary-surface: #f0faf8;
+
+    /* Accent — Warm amber */
+    --accent: #e8913a;
+    --accent-hover: #d17e2e;
+    --accent-light: #fef4e8;
+
+    /* Query type colors */
+    --structured-hue: #3b82f6;
+    --structured-light: #eff6ff;
+    --structured-border: #bfdbfe;
+
+    --semantic-hue: #8b5cf6;
+    --semantic-light: #f5f3ff;
+    --semantic-border: #ddd6fe;
+
+    --image-hue: #f97316;
+    --image-light: #fff7ed;
+    --image-border: #fed7aa;
+
+    --hybrid-hue: #eab308;
+    --hybrid-light: #fefce8;
+    --hybrid-border: #fde68a;
+
+    /* Semantic */
+    --success: #22c55e;
+    --success-light: #f0fdf4;
+    --warning: #f59e0b;
+    --warning-light: #fffbeb;
+    --danger: #ef4444;
+    --danger-light: #fef2f2;
+    --danger-border: #fecaca;
   }
 
   html {
@@ -40,31 +82,59 @@
 
   /* Custom scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: rgba(27, 136, 103, 0.35);
-    border-radius: 3px;
+    background: var(--border-strong);
+    border-radius: 100px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(27, 136, 103, 0.6);
+    background: var(--text-muted);
   }
 
-  /* Range input accent */
+  /* Range input */
   input[type="range"] {
-    accent-color: #1b8867;
+    accent-color: var(--primary);
   }
 }
 
 @layer components {
-  /* Subtle card container */
-  .card-subtle {
-    background: #ffffff;
-    border: 1px solid #a9e2cc;
+  /* Glass card surface */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.04),
+      0 4px 16px rgba(0, 0, 0, 0.03);
+  }
+
+  /* Elevated card */
+  .card-elevated {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.04),
+      0 6px 24px rgba(0, 0, 0, 0.03);
+    transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+  .card-elevated:hover {
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.06),
+      0 12px 32px rgba(0, 0, 0, 0.06);
+    border-color: var(--border-strong);
+  }
+
+  /* Code block surface */
+  .code-surface {
+    background: #1e293b;
+    color: #e2e8f0;
+    border: 1px solid #334155;
   }
 }
 
@@ -77,17 +147,66 @@
     overflow: hidden;
   }
 
-  /* Animation: subtle fade-in */
+  /* ────── Animations ────── */
+
+  /* Fade in */
   @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out both;
+  }
+
+  /* Slide up + fade */
+  @keyframes slideUpFade {
     from {
       opacity: 0;
+      transform: translateY(12px);
     }
     to {
       opacity: 1;
+      transform: translateY(0);
     }
   }
+  .animate-slide-up {
+    animation: slideUpFade 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
 
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-out both;
+  /* Stagger delays for card entrances */
+  .stagger-1 { animation-delay: 0.04s; }
+  .stagger-2 { animation-delay: 0.08s; }
+  .stagger-3 { animation-delay: 0.12s; }
+  .stagger-4 { animation-delay: 0.16s; }
+  .stagger-5 { animation-delay: 0.20s; }
+  .stagger-6 { animation-delay: 0.24s; }
+  .stagger-7 { animation-delay: 0.28s; }
+  .stagger-8 { animation-delay: 0.32s; }
+  .stagger-9 { animation-delay: 0.36s; }
+  .stagger-10 { animation-delay: 0.40s; }
+
+  /* Shimmer for skeletons */
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .animate-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--bg-elevated) 25%,
+      var(--bg-inset) 37%,
+      var(--bg-elevated) 63%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+  }
+
+  /* Subtle pulse glow for live indicator */
+  @keyframes pulseGlow {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(42, 157, 143, 0.4); }
+    50% { opacity: 0.8; box-shadow: 0 0 0 4px rgba(42, 157, 143, 0); }
+  }
+  .animate-pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
   }
 }

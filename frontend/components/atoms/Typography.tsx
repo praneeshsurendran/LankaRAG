@@ -16,13 +16,13 @@ export function Typography({
   const Component = as || (variant.startsWith("h") ? variant : variant === "small" ? "small" : "p");
 
   const variants = {
-    h1: "text-2xl sm:text-3xl font-bold tracking-tight text-[#062b20]",
-    h2: "text-xl font-bold tracking-tight text-[#062b20]",
-    h3: "text-lg font-semibold tracking-tight text-[#0a382a]",
-    h4: "text-base font-semibold tracking-tight text-[#0a382a]",
-    p: "text-sm leading-relaxed text-[#12543e]",
-    small: "text-xs font-medium leading-none text-[#1b6b51]",
-    muted: "text-xs text-[#377d64]",
+    h1: "text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--text-primary)] font-[family-name:var(--font-outfit)]",
+    h2: "text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-primary)] font-[family-name:var(--font-outfit)]",
+    h3: "text-lg font-semibold tracking-tight text-[var(--text-primary)] font-[family-name:var(--font-outfit)]",
+    h4: "text-base font-semibold tracking-tight text-[var(--text-primary)] font-[family-name:var(--font-outfit)]",
+    p: "text-sm leading-relaxed text-[var(--text-secondary)]",
+    small: "text-xs font-medium leading-none text-[var(--text-secondary)]",
+    muted: "text-sm text-[var(--text-muted)]",
   };
 
   return (
