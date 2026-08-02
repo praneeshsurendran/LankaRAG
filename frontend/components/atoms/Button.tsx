@@ -15,16 +15,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const variants = {
-      primary: "bg-emerald-500 text-white hover:bg-emerald-600 shadow-md",
-      secondary: "bg-white/10 text-white hover:bg-white/20",
-      outline: "border border-white/20 text-white hover:bg-white/5",
-      ghost: "text-white/70 hover:text-white hover:bg-white/5",
+      primary: "bg-[#1b8867] text-white hover:bg-[#157357] font-semibold border border-[#157357] shadow-sm",
+      secondary: "bg-[#d4f2e6] text-[#062b20] hover:bg-[#c3ecd9] border border-[#a9e2cc]",
+      outline: "border border-[#a9e2cc] text-[#062b20] hover:bg-[#d4f2e6]",
+      ghost: "text-[#12543e] hover:text-[#062b20] hover:bg-[#d4f2e6]",
     };
 
     const sizes = {
-      sm: "h-8 px-3 text-xs rounded-lg",
-      md: "h-10 px-4 py-2 text-sm rounded-xl",
-      lg: "h-12 px-6 py-3 text-base rounded-xl",
+      sm: "h-8 px-3 text-xs rounded-md",
+      md: "h-9 px-4 py-2 text-sm rounded-lg",
+      lg: "h-11 px-5 py-2.5 text-sm rounded-lg",
     };
 
     return (
@@ -32,7 +32,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={cn(
-          "inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:opacity-50 disabled:pointer-events-none",
+          "inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#1b8867] disabled:opacity-50 disabled:pointer-events-none",
           variants[variant],
           sizes[size],
           className

@@ -16,14 +16,14 @@ export function Badge({
   ...props
 }: BadgeProps) {
   const variants = {
-    default: "bg-white/10 text-white border-white/20",
-    structured: "bg-blue-500/20 text-blue-300 border-blue-500/30",
-    semantic: "bg-violet-500/20 text-violet-300 border-violet-500/30",
-    image: "bg-amber-500/20 text-amber-300 border-amber-500/30",
-    hybrid: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
-    success: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-    warning: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-    danger: "bg-red-500/20 text-red-400 border-red-500/30",
+    default: "bg-[#d4f2e6] text-[#0a382a] border-[#a9e2cc]",
+    structured: "bg-[#d4f2e6] text-[#0a382a] border-[#a9e2cc]",
+    semantic: "bg-[#d4f2e6] text-[#0a382a] border-[#a9e2cc]",
+    image: "bg-[#d4f2e6] text-[#0a382a] border-[#a9e2cc]",
+    hybrid: "bg-[#1b8867]/20 text-[#062b20] border-[#1b8867]/40",
+    success: "bg-[#d4f2e6] text-[#0a382a] border-[#a9e2cc]",
+    warning: "bg-[#d4f2e6] text-[#0a382a] border-[#a9e2cc]",
+    danger: "bg-[#fdeded] text-[#8a2b2b] border-[#f8c4c4]",
   };
 
   const sizes = {
@@ -31,21 +31,10 @@ export function Badge({
     md: "px-2.5 py-1 text-xs",
   };
 
-  const pulseColors = {
-    default: "bg-white",
-    structured: "bg-blue-400",
-    semantic: "bg-violet-400",
-    image: "bg-amber-400",
-    hybrid: "bg-emerald-400",
-    success: "bg-emerald-400",
-    warning: "bg-amber-400",
-    danger: "bg-red-400",
-  };
-
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1.5 font-semibold rounded-full border backdrop-blur-sm",
+        "inline-flex items-center gap-1.5 font-medium rounded-md border",
         variants[variant],
         sizes[size],
         className
@@ -55,9 +44,8 @@ export function Badge({
       {pulse && (
         <span
           className={cn(
-            "rounded-full animate-pulse",
-            size === "sm" ? "w-1.5 h-1.5" : "w-2 h-2",
-            pulseColors[variant]
+            "rounded-full bg-[#1b8867] opacity-90 animate-pulse",
+            size === "sm" ? "w-1.5 h-1.5" : "w-2 h-2"
           )}
         />
       )}

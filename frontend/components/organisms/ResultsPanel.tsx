@@ -21,13 +21,13 @@ export interface ResultsPanelProps {
 
 function SkeletonCard() {
   return (
-    <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden animate-pulse">
-      <div className="h-44 bg-white/10" />
+    <div className="bg-white border border-[#a9e2cc] rounded-xl overflow-hidden animate-pulse shadow-sm">
+      <div className="h-40 bg-[#d4f2e6]/60" />
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-white/10 rounded-full w-3/4" />
-        <div className="h-3 bg-white/10 rounded-full w-1/2" />
-        <div className="h-3 bg-white/10 rounded-full w-full" />
-        <div className="h-3 bg-white/10 rounded-full w-5/6" />
+        <div className="h-3.5 bg-[#d4f2e6] rounded w-3/4" />
+        <div className="h-3 bg-[#d4f2e6] rounded w-1/2" />
+        <div className="h-3 bg-[#d4f2e6] rounded w-full" />
+        <div className="h-3 bg-[#d4f2e6] rounded w-5/6" />
       </div>
     </div>
   );
@@ -35,29 +35,27 @@ function SkeletonCard() {
 
 function AIResponseBlock({ text }: { text: string }) {
   const formatted = text
-    .replace(/^### (.+)$/gm, '<h3 class="text-base font-bold text-emerald-300 mt-4 mb-1">$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2 class="text-lg font-bold text-emerald-200 mt-5 mb-2">$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1 class="text-xl font-bold text-emerald-100 mt-5 mb-2">$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em class="text-white/80 italic">$1</em>')
-    .replace(/^- (.+)$/gm, '<li class="flex gap-2 text-white/75"><span class="text-emerald-400 mt-0.5 flex-shrink-0">▸</span><span>$1</span></li>')
-    .replace(/\n{2,}/g, '</p><p class="text-white/70 text-sm leading-relaxed mt-3">')
+    .replace(/^### (.+)$/gm, '<h3 class="text-sm font-semibold text-[#062b20] mt-4 mb-1">$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2 class="text-base font-semibold text-[#062b20] mt-4 mb-1.5">$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1 class="text-lg font-bold text-[#062b20] mt-4 mb-2">$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-[#062b20] font-semibold">$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em class="text-[#12543e] italic">$1</em>')
+    .replace(/^- (.+)$/gm, '<li class="flex gap-2 text-[#12543e]"><span class="text-[#1b8867] flex-shrink-0">•</span><span>$1</span></li>')
+    .replace(/\n{2,}/g, '</p><p class="text-[#12543e] text-sm leading-relaxed mt-2.5">')
     .replace(/\n/g, "<br />");
 
   return (
-    <div className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-2xl p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-          <Sparkles className="w-4 h-4 text-white" />
-        </div>
+    <div className="bg-white border border-[#a9e2cc] rounded-xl p-5 space-y-3 shadow-sm">
+      <div className="flex items-center gap-2 border-b border-[#a9e2cc]/80 pb-3">
+        <Sparkles className="w-4 h-4 text-[#1b8867]" />
         <div>
-          <Typography variant="small" className="text-emerald-300">LankaGuide AI</Typography>
-          <Typography variant="muted" className="text-[10px]">Powered by Google Gemini</Typography>
+          <Typography variant="small" className="text-[#062b20] font-semibold">LankaGuide AI Overview</Typography>
+          <Typography variant="muted" className="text-[10px] text-[#377d64]">Synthesized from knowledge base</Typography>
         </div>
       </div>
       <div
-        className="text-sm text-white/70 leading-relaxed"
-        dangerouslySetInnerHTML={{ __html: `<p class="text-white/70 text-sm leading-relaxed">${formatted}</p>` }}
+        className="text-sm text-[#12543e] leading-relaxed"
+        dangerouslySetInnerHTML={{ __html: `<p class="text-[#12543e] text-sm leading-relaxed">${formatted}</p>` }}
       />
     </div>
   );
@@ -65,11 +63,11 @@ function AIResponseBlock({ text }: { text: string }) {
 
 function SQLBlock({ sql }: { sql: string }) {
   return (
-    <div className="bg-slate-900/80 border border-blue-500/20 rounded-xl p-4">
-      <Typography variant="small" className="text-blue-400 font-mono mb-2 block">
-        Generated SQL
+    <div className="bg-[#edf8f3] border border-[#a9e2cc] rounded-lg p-4">
+      <Typography variant="small" className="text-[#12543e] font-mono mb-2 block text-xs font-semibold">
+        Generated SQL Query
       </Typography>
-      <pre className="text-xs text-blue-300 font-mono overflow-x-auto whitespace-pre-wrap">
+      <pre className="text-xs text-[#062b20] font-mono overflow-x-auto whitespace-pre-wrap">
         {sql}
       </pre>
     </div>
@@ -77,10 +75,10 @@ function SQLBlock({ sql }: { sql: string }) {
 }
 
 const QUERY_BADGE_MAP: Record<QueryType, { label: string, icon: React.ReactNode, variant: any }> = {
-  structured: { label: "Structured SQL", icon: <Database className="w-3 h-3" />, variant: "structured" },
-  semantic: { label: "Semantic Search", icon: <Search className="w-3 h-3" />, variant: "semantic" },
-  "image-search": { label: "Image Similarity", icon: <ImageIcon className="w-3 h-3" />, variant: "image" },
-  hybrid: { label: "Hybrid RAG", icon: <Sparkles className="w-3 h-3" />, variant: "hybrid" },
+  structured: { label: "Structured SQL", icon: <Database className="w-3 h-3 text-[#157357]" />, variant: "structured" },
+  semantic: { label: "Semantic Search", icon: <Search className="w-3 h-3 text-[#157357]" />, variant: "semantic" },
+  "image-search": { label: "Image Similarity", icon: <ImageIcon className="w-3 h-3 text-[#157357]" />, variant: "image" },
+  hybrid: { label: "Hybrid RAG", icon: <Sparkles className="w-3 h-3 text-[#157357]" />, variant: "hybrid" },
 };
 
 export function ResultsPanel({
@@ -98,9 +96,9 @@ export function ResultsPanel({
   if (status === "loading") {
     return (
       <div className="space-y-4">
-        <div className="flex items-center gap-2 text-sm text-white/50">
-          <Loader2 className="animate-spin w-4 h-4" />
-          Searching across data sources...
+        <div className="flex items-center gap-2 text-xs text-[#12543e]">
+          <Loader2 className="animate-spin w-3.5 h-3.5 text-[#1b8867]" />
+          Searching dataset...
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
@@ -111,22 +109,21 @@ export function ResultsPanel({
 
   if (status === "error") {
     return (
-      <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-6 text-center">
-        <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-2" />
-        <Typography variant="h4" className="text-red-400 mb-1">Query Failed</Typography>
-        <Typography variant="muted">{error}</Typography>
+      <div className="bg-[#fdeded] border border-[#f8c4c4] rounded-xl p-6 text-center">
+        <AlertCircle className="w-6 h-6 text-[#8a2b2b] mx-auto mb-2" />
+        <Typography variant="h4" className="text-[#8a2b2b] mb-1">Query Error</Typography>
+        <Typography variant="muted" className="text-[#a84343]">{error}</Typography>
       </div>
     );
   }
 
   if (status === "idle") {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center">
-        <div className="text-5xl mb-4">🌴</div>
-        <Typography variant="h2" className="text-white/60 mb-2">Discover Sri Lanka</Typography>
-        <Typography variant="muted" className="max-w-sm mx-auto mb-6">
-          Select a query mode and ask anything about Sri Lanka&apos;s beaches,
-          waterfalls, temples, historical sites, and national parks.
+      <div className="flex flex-col items-center justify-center py-20 text-center border border-[#a9e2cc] rounded-xl bg-white shadow-sm">
+        <Typography variant="h3" className="text-[#062b20] mb-2">Sri Lanka Travel Search</Typography>
+        <Typography variant="muted" className="max-w-sm mx-auto text-[#377d64]">
+          Choose a query mode to explore attractions across beaches, waterfalls,
+          historical sites, national parks, and temples.
         </Typography>
       </div>
     );
@@ -136,14 +133,14 @@ export function ResultsPanel({
   const badgeConfig = QUERY_BADGE_MAP[queryType];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Badge variant={badgeConfig.variant} pulse>
+          <Badge variant={badgeConfig.variant}>
             {badgeConfig.icon} {badgeConfig.label}
           </Badge>
           {totalSources > 0 && (
-            <span className="text-xs text-white/30">
+            <span className="text-xs text-[#377d64]">
               {totalSources} source{totalSources !== 1 ? "s" : ""} retrieved
             </span>
           )}
@@ -154,17 +151,17 @@ export function ResultsPanel({
       {generatedSql && <SQLBlock sql={generatedSql} />}
 
       {!hasResults && (
-        <div className="text-center py-12">
-          <Search className="w-8 h-8 text-white/30 mx-auto mb-3" />
-          <Typography variant="muted">No attractions found for your query.</Typography>
+        <div className="text-center py-12 border border-[#a9e2cc] rounded-xl bg-white shadow-sm">
+          <Search className="w-6 h-6 text-[#377d64] mx-auto mb-2" />
+          <Typography variant="muted" className="text-[#377d64]">No attractions matched your query.</Typography>
         </div>
       )}
 
       {queryType === "hybrid" ? (
-        <div className="space-y-8">
-          <ResultsSection title="Structured Results" icon={<Database className="w-5 h-5 text-blue-400" />} items={structuredResults} colorClass="text-blue-300" />
-          <ResultsSection title="Semantic Matches" icon={<Search className="w-5 h-5 text-violet-400" />} items={semanticResults} colorClass="text-violet-300" />
-          <ResultsSection title="Visual Matches" icon={<ImageIcon className="w-5 h-5 text-amber-400" />} items={imageResults} colorClass="text-amber-300" />
+        <div className="space-y-6">
+          <ResultsSection title="Structured Database Matches" icon={<Database className="w-4 h-4 text-[#157357]" />} items={structuredResults} colorClass="text-[#062b20]" />
+          <ResultsSection title="Semantic Text Matches" icon={<Search className="w-4 h-4 text-[#157357]" />} items={semanticResults} colorClass="text-[#062b20]" />
+          <ResultsSection title="Visual Image Matches" icon={<ImageIcon className="w-4 h-4 text-[#157357]" />} items={imageResults} colorClass="text-[#062b20]" />
         </div>
       ) : (
         allResults.length > 0 && (

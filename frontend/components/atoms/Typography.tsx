@@ -16,13 +16,13 @@ export function Typography({
   const Component = as || (variant.startsWith("h") ? variant : variant === "small" ? "small" : "p");
 
   const variants = {
-    h1: "text-3xl sm:text-4xl font-bold tracking-tight text-white",
-    h2: "text-2xl font-bold tracking-tight text-white",
-    h3: "text-xl font-semibold tracking-tight text-white",
-    h4: "text-lg font-semibold tracking-tight text-white",
-    p: "text-base leading-7 text-white/90",
-    small: "text-sm font-medium leading-none text-white/70",
-    muted: "text-sm text-white/50",
+    h1: "text-2xl sm:text-3xl font-bold tracking-tight text-[#062b20]",
+    h2: "text-xl font-bold tracking-tight text-[#062b20]",
+    h3: "text-lg font-semibold tracking-tight text-[#0a382a]",
+    h4: "text-base font-semibold tracking-tight text-[#0a382a]",
+    p: "text-sm leading-relaxed text-[#12543e]",
+    small: "text-xs font-medium leading-none text-[#1b6b51]",
+    muted: "text-xs text-[#377d64]",
   };
 
   return (
