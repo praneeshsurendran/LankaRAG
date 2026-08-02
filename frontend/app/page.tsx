@@ -19,26 +19,19 @@ const INITIAL_SEARCH_STATE: SearchPanelState = {
 };
 
 const STATS = [
-  { label: "Beaches", count: 5, emoji: "🏖️", color: "text-cyan-400" },
-  { label: "Waterfalls", count: 5, emoji: "💧", color: "text-blue-400" },
-  { label: "Historical", count: 5, emoji: "🏛️", color: "text-amber-400" },
-  { label: "Parks", count: 5, emoji: "🦁", color: "text-emerald-400" },
-  { label: "Temples", count: 5, emoji: "🕌", color: "text-rose-400" },
+  { label: "Beaches", count: 5, emoji: "🏖️" },
+  { label: "Waterfalls", count: 5, emoji: "💧" },
+  { label: "Historical", count: 5, emoji: "🏛️" },
+  { label: "Parks", count: 5, emoji: "🦁" },
+  { label: "Temples", count: 5, emoji: "🕌" },
 ];
 
 function BackgroundDecor() {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden">
-      <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-emerald-500/5 blur-3xl" />
-      <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] rounded-full bg-teal-500/5 blur-3xl" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-blue-500/3 blur-3xl" />
-      <div
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage: "radial-gradient(rgba(16,185,129,0.15) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
+      <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-[#1b8867]/5 blur-3xl" />
+      <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] rounded-full bg-[#1b8867]/5 blur-3xl" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[#1b8867]/5 blur-3xl" />
     </div>
   );
 }
@@ -152,25 +145,25 @@ export default function Home() {
     <>
       <BackgroundDecor />
 
-      <div className="relative z-10 min-h-screen flex flex-col">
-        <header className="border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-20">
+      <div className="relative z-10 min-h-screen flex flex-col bg-[#edf8f3] text-[#062b20]">
+        <header className="border-b border-[#a9e2cc] bg-white/90 sticky top-0 z-20 backdrop-blur-sm">
           <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 flex-shrink-0">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-xl shadow-lg shadow-emerald-500/20">
+              <div className="w-9 h-9 rounded-xl bg-[#1b8867] flex items-center justify-center text-xl shadow-sm text-white">
                 🌴
               </div>
               <div>
-                <h1 className="text-base font-bold text-white leading-none">
-                  Lanka<span className="gradient-text-emerald">RAG</span>
+                <h1 className="text-base font-bold text-[#062b20] leading-none">
+                  Lanka<span className="text-[#1b8867]">RAG</span>
                 </h1>
-                <p className="text-[10px] text-white/40 leading-none mt-0.5">
+                <p className="text-[10px] text-[#377d64] leading-none mt-0.5">
                   Multimodal AI Travel Guide
                 </p>
               </div>
             </div>
             <div className="hidden md:flex items-center gap-2">
               {PIPELINE_BADGES.map((b) => (
-                <span key={b.label} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/50">
+                <span key={b.label} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-[#a9e2cc] text-xs text-[#12543e]">
                   {b.icon} {b.label}
                 </span>
               ))}
@@ -178,27 +171,27 @@ export default function Home() {
           </div>
         </header>
 
-        <section className="border-b border-white/5 bg-gradient-to-b from-emerald-500/5 to-transparent">
+        <section className="border-b border-[#a9e2cc]/80 bg-white">
           <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-10 text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 mb-5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#d4f2e6] border border-[#a9e2cc] text-xs text-[#062b20] mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1b8867] animate-pulse" />
               25 attractions · 5 categories · 4 query pipelines
             </div>
 
-            <Typography variant="h1" className="mb-3 leading-tight">
-              Your Intelligent Guide to <span className="gradient-text-emerald">Sri Lanka</span>
+            <Typography variant="h1" className="mb-3 leading-tight text-[#062b20]">
+              Your Intelligent Guide to <span className="text-[#1b8867]">Sri Lanka</span>
             </Typography>
-            <Typography variant="muted" className="max-w-xl mx-auto">
+            <Typography variant="muted" className="max-w-xl mx-auto text-[#377d64]">
               Search by structured facts, semantic meaning, visual similarity,
               or let the AI synthesize everything for you.
             </Typography>
 
             <div className="flex flex-wrap items-center justify-center gap-3 mt-7">
               {STATS.map((s) => (
-                <div key={s.label} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10">
+                <div key={s.label} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-[#a9e2cc] shadow-sm">
                   <span>{s.emoji}</span>
-                  <span className={`text-sm font-semibold ${s.color}`}>{s.count}</span>
-                  <span className="text-xs text-white/40">{s.label}</span>
+                  <span className="text-sm font-semibold text-[#062b20]">{s.count}</span>
+                  <span className="text-xs text-[#377d64]">{s.label}</span>
                 </div>
               ))}
             </div>

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Input, Textarea } from "@/components/atoms/Input";
+import { Textarea } from "@/components/atoms/Input";
 import { Button } from "@/components/atoms/Button";
 import { Send, Search } from "lucide-react";
 
@@ -31,7 +31,7 @@ export function SearchBar({
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-xs font-medium text-white/40 uppercase tracking-widest block">
+      <label className="text-xs font-medium text-[#12543e] uppercase tracking-wider block">
         {isHybrid ? "Your Question" : "Search Query"}
       </label>
       <div className="relative">
@@ -50,9 +50,9 @@ export function SearchBar({
             isLoading={isLoading}
             disabled={!query.trim() || disabled}
             variant="primary"
-            className="w-8 h-8 p-0 rounded-lg"
+            className="w-7 h-7 p-0 rounded-md"
           >
-            {isHybrid ? <Send className="w-4 h-4" /> : <Search className="w-4 h-4" />}
+            {isHybrid ? <Send className="w-3.5 h-3.5 text-white" /> : <Search className="w-3.5 h-3.5 text-white" />}
           </Button>
         </div>
       </div>

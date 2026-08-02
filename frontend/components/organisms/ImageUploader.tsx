@@ -81,9 +81,9 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
 
   return (
     <div className="space-y-3">
-      <label className="text-xs font-medium text-white/40 uppercase tracking-widest block flex justify-between items-center">
+      <label className="text-xs font-medium text-[#12543e] uppercase tracking-wider block flex justify-between items-center">
         <span>Image Input</span>
-        <span className="text-[10px] text-white/30 lowercase normal-case">
+        <span className="text-[10px] text-[#377d64] lowercase normal-case">
           (URL or Upload)
         </span>
       </label>
@@ -104,9 +104,9 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
       />
 
       <div className="flex items-center gap-2">
-        <div className="flex-1 h-px bg-white/10" />
-        <span className="text-[10px] text-white/30">OR UPLOAD</span>
-        <div className="flex-1 h-px bg-white/10" />
+        <div className="flex-1 h-px bg-[#a9e2cc]" />
+        <span className="text-[10px] text-[#377d64]">OR UPLOAD</span>
+        <div className="flex-1 h-px bg-[#a9e2cc]" />
       </div>
 
       {/* Upload Zone */}
@@ -116,17 +116,17 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           className={cn(
-            "relative flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200",
-            disabled ? "opacity-50 cursor-not-allowed border-white/10" : "hover:bg-white/5 hover:border-amber-500/50",
-            isDragging ? "border-amber-500 bg-amber-500/10" : "border-white/20 bg-white/5"
+            "relative flex flex-col items-center justify-center w-full h-28 border border-dashed rounded-lg cursor-pointer transition-colors",
+            disabled ? "opacity-50 cursor-not-allowed border-[#a9e2cc]" : "hover:bg-[#d4f2e6]/50 hover:border-[#1b8867]",
+            isDragging ? "border-[#1b8867] bg-[#d4f2e6]" : "border-[#a9e2cc] bg-white"
           )}
         >
-          <div className="flex flex-col items-center justify-center pt-5 pb-6">
-            <UploadCloud className={cn("w-8 h-8 mb-2", isDragging ? "text-amber-400" : "text-white/40")} />
-            <p className="mb-1 text-xs text-white/70">
-              <span className="font-semibold text-amber-400">Click to upload</span> or drag and drop
+          <div className="flex flex-col items-center justify-center py-4">
+            <UploadCloud className={cn("w-6 h-6 mb-1.5", isDragging ? "text-[#157357]" : "text-[#377d64]")} />
+            <p className="mb-0.5 text-xs text-[#12543e]">
+              <span className="font-medium text-[#062b20]">Click to upload</span> or drag image
             </p>
-            <p className="text-[10px] text-white/40">PNG, JPG up to 5MB</p>
+            <p className="text-[10px] text-[#377d64]">PNG, JPG up to 5MB</p>
           </div>
           <input
             type="file"
@@ -138,17 +138,17 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
         </label>
       ) : (
         /* Preview Zone */
-        <div className="relative rounded-xl overflow-hidden h-40 border border-amber-500/30 group">
+        <div className="relative rounded-lg overflow-hidden h-36 border border-[#a9e2cc] group bg-[#d4f2e6]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={value}
             alt="Preview"
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = "none";
             }}
           />
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute inset-0 bg-[#062b20]/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <Button
               variant="secondary"
               size="sm"
@@ -160,16 +160,16 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
             </Button>
           </div>
           {value.startsWith("data:image") && (
-            <div className="absolute top-2 left-2 px-2 py-1 bg-black/60 rounded-md backdrop-blur flex items-center gap-1 text-[10px] font-medium text-amber-300 border border-white/10">
-              <ImageIcon className="w-3 h-3" /> Uploaded File
+            <div className="absolute top-2 left-2 px-2 py-0.5 bg-white/90 rounded border border-[#a9e2cc] flex items-center gap-1 text-[10px] font-medium text-[#062b20] shadow-sm">
+              <ImageIcon className="w-3 h-3 text-[#1b8867]" /> Uploaded File
             </div>
           )}
         </div>
       )}
 
       {error && (
-        <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
-           <X className="w-3 h-3" /> {error}
+        <p className="text-xs text-[#8a2b2b] mt-1 flex items-center gap-1">
+           <X className="w-3 h-3 text-[#8a2b2b]" /> {error}
         </p>
       )}
     </div>
