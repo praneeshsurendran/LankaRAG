@@ -11,7 +11,7 @@ export const hybridService = {
    */
   async query(body: HybridQueryRequest): Promise<HybridQueryResponse> {
     return post<HybridQueryRequest, HybridQueryResponse>(
-      "/api/query/hybrid",
+      "/api/v1/query/hybrid",
       body
     );
   },

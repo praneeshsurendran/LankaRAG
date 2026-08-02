@@ -15,7 +15,7 @@ export const imageService = {
    */
   async query(body: ImageSearchRequest): Promise<ImageSearchResponse> {
     return post<ImageSearchRequest, ImageSearchResponse>(
-      "/api/query/image-search",
+      "/api/v1/query/image-search",
       body
     );
   },

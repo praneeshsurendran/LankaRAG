@@ -11,7 +11,7 @@ export const structuredService = {
    */
   async query(body: StructuredQueryRequest): Promise<StructuredQueryResponse> {
     return post<StructuredQueryRequest, StructuredQueryResponse>(
-      "/api/query/structured",
+      "/api/v1/query/structured",
       body
     );
   },

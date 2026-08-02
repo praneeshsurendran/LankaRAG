@@ -11,7 +11,7 @@ export const semanticService = {
    */
   async query(body: SemanticQueryRequest): Promise<SemanticQueryResponse> {
     return post<SemanticQueryRequest, SemanticQueryResponse>(
-      "/api/query/semantic",
+      "/api/v1/query/semantic",
       body
     );
   },
