@@ -23,6 +23,7 @@ import logging
 import os
 import ssl
 import sys
+import io
 
 # Disable SSL verification for downloading model weights on macOS
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -181,7 +182,7 @@ def upsert_text_embeddings(name_to_id: dict[str, int]) -> None:
 def download_and_encode_image(image_url: str, preprocess, model, device: str) -> list[float] | None:
     """Download an image from URL and return its CLIP embedding."""
     try:
-        response = requests.get(image_url, timeout=15)
+        response = requests.get(image_url, timeout=15, headers={"User-Agent": "LankaRAG/1.0 (Contact: admin@lankarag.com)"})
         response.raise_for_status()
         image = Image.open(io.BytesIO(response.content)).convert("RGB")
         image_tensor = preprocess(image).unsqueeze(0).to(device)
