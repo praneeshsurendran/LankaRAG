@@ -241,8 +241,15 @@ class TestRagService:
 
         mock_msg = MagicMock()
         mock_msg.content = "Here are some beautiful Sri Lankan destinations for you!"
-        mock_llm = AsyncMock()
-        mock_llm.ainvoke = AsyncMock(return_value=mock_msg)
+
+        # The chain is built as: prompt | llm  → chain.ainvoke()
+        # We mock _get_rag_llm to return an object whose __or__ returns
+        # a chain mock whose ainvoke is an AsyncMock returning mock_msg.
+        chain_mock = MagicMock()
+        chain_mock.ainvoke = AsyncMock(return_value=mock_msg)
+
+        mock_llm = MagicMock()
+        mock_llm.__or__ = MagicMock(return_value=chain_mock)
 
         attractions = [_make_attraction(score=0.9, source="pinecone-text")]
 
@@ -264,8 +271,12 @@ class TestRagService:
 
         mock_msg = MagicMock()
         mock_msg.content = "Travel recommendations for you!"
-        mock_llm = AsyncMock()
-        mock_llm.ainvoke = AsyncMock(return_value=mock_msg)
+
+        # Build a proper LangChain-compatible chain mock
+        chain_mock = MagicMock()
+        chain_mock.ainvoke = AsyncMock(return_value=mock_msg)
+        mock_llm = MagicMock()
+        mock_llm.__or__ = MagicMock(return_value=chain_mock)
 
         mock_db = AsyncMock()
         attraction = _make_attraction()

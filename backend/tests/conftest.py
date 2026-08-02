@@ -5,19 +5,20 @@ All heavy dependencies (Pinecone, Gemini, PostgreSQL) are mocked so the
 test suite runs in total isolation without network calls or a running DB.
 
 Fixtures:
-  - mock_settings          : Override settings with safe test values
-  - mock_db_session        : AsyncMock of SQLAlchemy AsyncSession
-  - mock_pinecone_text     : MagicMock of Pinecone text Index
-  - mock_pinecone_image    : MagicMock of Pinecone image Index
-  - mock_gemini_llm        : AsyncMock of ChatGoogleGenerativeAI
+  - mock_settings            : Override settings with safe test values
+  - mock_db_session          : AsyncMock of SQLAlchemy AsyncSession
+  - mock_pinecone_text       : MagicMock of Pinecone text Index
+  - mock_pinecone_image      : MagicMock of Pinecone image Index
+  - mock_gemini_llm          : AsyncMock of ChatGoogleGenerativeAI
   - mock_sentence_transformer: MagicMock of SentenceTransformer
-  - mock_clip              : MagicMock of CLIP model
-  - test_client            : httpx.AsyncClient over the FastAPI app
+  - mock_clip                : MagicMock of CLIP model
+  - api_client               : httpx.AsyncClient over the FastAPI app
 """
 
 from __future__ import annotations
 
 import asyncio
+import contextlib
 from typing import AsyncGenerator
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -73,13 +74,14 @@ def mock_db_session() -> AsyncMock:
     """Mock AsyncSession that returns a sample attraction on execute."""
     session = AsyncMock(spec=AsyncSession)
 
-    # Mock scalars().all() to return a TouristAttraction-like object
+    # Mock for ORM-style queries (scalars().all())
     db_attraction = MagicMock()
     db_attraction.id = 1
     db_attraction.to_dict.return_value = SAMPLE_ATTRACTION_DICT
 
     scalar_result = MagicMock()
     scalar_result.scalars.return_value.all.return_value = [db_attraction]
+    # Mock for raw text() queries (fetchall())
     scalar_result.fetchall.return_value = [SAMPLE_ATTRACTION_ROW]
 
     session.execute = AsyncMock(return_value=scalar_result)
@@ -94,7 +96,9 @@ def mock_pinecone_text() -> MagicMock:
     """Mock Pinecone text index returning a sample match."""
     idx = MagicMock()
     idx.query.return_value = {"matches": SAMPLE_PINECONE_MATCHES}
-    idx.describe_index_stats.return_value = MagicMock(total_vector_count=25)
+    stats = MagicMock()
+    stats.total_vector_count = 25
+    idx.describe_index_stats.return_value = stats
     return idx
 
 
@@ -103,23 +107,35 @@ def mock_pinecone_image() -> MagicMock:
     """Mock Pinecone image index returning a sample match."""
     idx = MagicMock()
     idx.query.return_value = {"matches": SAMPLE_PINECONE_MATCHES}
-    idx.describe_index_stats.return_value = MagicMock(total_vector_count=25)
+    stats = MagicMock()
+    stats.total_vector_count = 25
+    idx.describe_index_stats.return_value = stats
     return idx
 
 
 # ── Gemini LLM mock ───────────────────────────────────────────────
 @pytest.fixture
 def mock_gemini_response() -> MagicMock:
-    """Mock AI message content."""
+    """Mock AI message — content is a plain string, not a coroutine."""
     msg = MagicMock()
     msg.content = "## Unawatuna Beach\n\nA beautiful beach in Galle district. Free entry. Easy difficulty."
     return msg
 
 
 @pytest.fixture
-def mock_gemini_llm(mock_gemini_response) -> AsyncMock:
-    """Mock ChatGoogleGenerativeAI with ainvoke returning a fixed response."""
-    llm = AsyncMock()
+def mock_gemini_llm(mock_gemini_response) -> MagicMock:
+    """
+    Mock ChatGoogleGenerativeAI.
+
+    The LangChain chain calls `chain.ainvoke(...)` which returns the message.
+    We make `ainvoke` an AsyncMock so it can be awaited, and its return_value
+    is the mock message (a plain MagicMock with a `.content` string attribute).
+    """
+    llm = MagicMock()
+    # __or__ lets the LLM be composed via the `|` operator (LangChain LCEL)
+    chain_mock = MagicMock()
+    chain_mock.ainvoke = AsyncMock(return_value=mock_gemini_response)
+    llm.__or__ = MagicMock(return_value=chain_mock)
     llm.ainvoke = AsyncMock(return_value=mock_gemini_response)
     return llm
 
@@ -147,7 +163,7 @@ def mock_clip_model() -> MagicMock:
 
 # ── TestClient factory ────────────────────────────────────────────
 @pytest_asyncio.fixture
-async def test_client(
+async def api_client(
     mock_db_session,
     mock_pinecone_text,
     mock_pinecone_image,
@@ -162,14 +178,28 @@ async def test_client(
     from app.core import db as db_module
     from app.services import embedding_service, sql_service, rag_service
 
+    # get_db must be an async generator function that yields the mock session
+    async def _override_get_db():
+        yield mock_db_session
+
+    # AsyncSessionFactory is used by rag_service for isolated sessions
+    async def _mock_session_factory():
+        return mock_db_session
+
+    # Wrap as async context manager for `async with AsyncSessionFactory() as session`
+    class _FakeSessionCM:
+        async def __aenter__(self):
+            return mock_db_session
+        async def __aexit__(self, *_):
+            pass
+
     patches = [
-        # DB session dependency override
         patch.object(db_module, "check_postgres", new=AsyncMock(return_value="ok")),
         patch.object(db_module, "check_pinecone_text", new=AsyncMock(return_value="ok (vectors: 25)")),
         patch.object(db_module, "check_pinecone_image", new=AsyncMock(return_value="ok (vectors: 25)")),
         patch.object(db_module, "get_pinecone_text_index", return_value=mock_pinecone_text),
         patch.object(db_module, "get_pinecone_image_index", return_value=mock_pinecone_image),
-        # Embedding service
+        patch.object(db_module, "AsyncSessionFactory", side_effect=lambda: _FakeSessionCM()),
         patch.object(embedding_service, "encode_text", return_value=[0.0] * 384),
         patch.object(embedding_service, "encode_text_with_clip", return_value=[0.0] * 512),
         patch.object(
@@ -177,13 +207,11 @@ async def test_client(
             "encode_image_from_url",
             new=AsyncMock(return_value=[0.0] * 512),
         ),
-        # SQL service – mock Gemini SQL generation
         patch.object(
             sql_service,
             "generate_sql",
             new=AsyncMock(return_value="SELECT * FROM tourist_attractions LIMIT 10"),
         ),
-        # RAG service – mock Gemini synthesis
         patch.object(
             rag_service,
             "_get_rag_llm",
@@ -191,14 +219,8 @@ async def test_client(
         ),
     ]
 
-    # Override the get_db dependency
-    app.dependency_overrides[db_module.get_db] = lambda: iter([mock_db_session])
-
-    with (p for p in patches):
-        # The above is not valid syntax for multiple patchers; use ExitStack
-        pass
-
-    import contextlib
+    # Override the get_db FastAPI dependency
+    app.dependency_overrides[db_module.get_db] = _override_get_db
 
     with contextlib.ExitStack() as stack:
         for p in patches:
@@ -208,5 +230,10 @@ async def test_client(
         async with AsyncClient(transport=transport, base_url="http://testserver") as client:
             yield client
 
-    # Clean up dependency overrides
     app.dependency_overrides.clear()
+
+
+# Keep test_client as an alias for backwards compatibility
+@pytest_asyncio.fixture
+async def test_client(api_client) -> AsyncGenerator[AsyncClient, None]:
+    yield api_client
