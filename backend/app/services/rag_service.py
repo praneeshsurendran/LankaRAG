@@ -21,6 +21,7 @@ from langchain.prompts import PromptTemplate
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
+from app.core.db import AsyncSessionFactory
 from app.schemas.attraction import AttractionResult
 from app.services import sql_service, vector_service, embedding_service
 
@@ -87,7 +88,6 @@ def _get_rag_llm() -> ChatGoogleGenerativeAI:
             google_api_key=settings.gemini_api_key,
             temperature=0.4,
             max_output_tokens=1024,
-            convert_system_message_to_human=True,
         )
     return _rag_llm
 
@@ -136,24 +136,30 @@ async def run_hybrid_rag(
         Tuple of (ai_response, structured_results, semantic_results, image_results)
     """
     # ── Concurrent retrieval: structured + semantic ──────────────────
+    # Each task gets its own DB session to prevent a failure in one from
+    # poisoning the others (InFailedSQLTransactionError).
     async def _fetch_structured() -> list[AttractionResult]:
-        try:
-            sql = await sql_service.generate_sql(query)
-            if not sql_service.is_safe_sql(sql):
-                logger.warning("Unsafe SQL skipped in hybrid: %s", sql)
+        async with AsyncSessionFactory() as session:
+            try:
+                sql = await sql_service.generate_sql(query)
+                if not sql_service.is_safe_sql(sql):
+                    logger.warning("Unsafe SQL skipped in hybrid: %s", sql)
+                    return []
+                return await sql_service.run_sql_query(sql, session, top_k=top_k)
+            except Exception as exc:
+                await session.rollback()
+                logger.warning("Structured retrieval failed in hybrid: %s", exc)
                 return []
-            return await sql_service.run_sql_query(sql, db, top_k=top_k)
-        except Exception as exc:
-            logger.warning("Structured retrieval failed in hybrid: %s", exc)
-            return []
 
     async def _fetch_semantic() -> list[AttractionResult]:
-        try:
-            vector = embedding_service.encode_text(query)
-            return await vector_service.text_search(vector, top_k, db)
-        except Exception as exc:
-            logger.warning("Semantic retrieval failed in hybrid: %s", exc)
-            return []
+        async with AsyncSessionFactory() as session:
+            try:
+                vector = embedding_service.encode_text(query)
+                return await vector_service.text_search(vector, top_k, session)
+            except Exception as exc:
+                await session.rollback()
+                logger.warning("Semantic retrieval failed in hybrid: %s", exc)
+                return []
 
     structured_results, semantic_results = await asyncio.gather(
         _fetch_structured(), _fetch_semantic()
@@ -162,11 +168,13 @@ async def run_hybrid_rag(
     # ── Optional image retrieval ─────────────────────────────────────
     image_results: list[AttractionResult] = []
     if image_url:
-        try:
-            img_vector = await embedding_service.encode_image_from_url(image_url)
-            image_results = await vector_service.image_search(img_vector, top_k, db)
-        except Exception as exc:
-            logger.warning("Image retrieval failed in hybrid: %s", exc)
+        async with AsyncSessionFactory() as session:
+            try:
+                img_vector = await embedding_service.encode_image_from_url(image_url)
+                image_results = await vector_service.image_search(img_vector, top_k, session)
+            except Exception as exc:
+                await session.rollback()
+                logger.warning("Image retrieval failed in hybrid: %s", exc)
 
     # ── Gemini synthesis ─────────────────────────────────────────────
     chain = _HYBRID_RAG_PROMPT | _get_rag_llm()
