@@ -13,7 +13,11 @@ export function Typography({
   children,
   ...props
 }: TypographyProps) {
-  const Component = as || (variant.startsWith("h") ? variant : variant === "small" ? "small" : "p");
+  const elements = {
+    h1: "h1", h2: "h2", h3: "h3", h4: "h4",
+    p: "p", small: "small", muted: "p",
+  } as const;
+  const Component = as ?? elements[variant];
 
   const variants = {
     h1: "text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--text-primary)] font-[family-name:var(--font-outfit)]",
@@ -26,7 +30,6 @@ export function Typography({
   };
 
   return (
-    // @ts-ignore - Dynamic component type
     <Component
       className={cn(variants[variant], className)}
       {...props}

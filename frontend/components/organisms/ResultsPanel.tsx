@@ -85,13 +85,6 @@ const QUERY_BADGE_MAP: Record<QueryType, { label: string, icon: React.ReactNode,
   hybrid: { label: "Hybrid RAG", icon: <Sparkles className="w-3 h-3" />, variant: "hybrid" },
 };
 
-const QUERY_ICON_MAP: Record<QueryType, React.ReactNode> = {
-  structured: <Database className="w-4 h-4 text-[var(--structured-hue)]" />,
-  semantic: <Search className="w-4 h-4 text-[var(--semantic-hue)]" />,
-  "image-search": <ImageIcon className="w-4 h-4 text-[var(--image-hue)]" />,
-  hybrid: <Sparkles className="w-4 h-4 text-[var(--hybrid-hue)]" />,
-};
-
 export function ResultsPanel({
   status,
   queryType,

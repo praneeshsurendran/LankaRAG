@@ -7,7 +7,7 @@ import { useStructuredQuery } from "@/hooks/useStructuredQuery";
 import { useSemanticQuery } from "@/hooks/useSemanticQuery";
 import { useImageQuery } from "@/hooks/useImageQuery";
 import { useHybridQuery } from "@/hooks/useHybridQuery";
-import type { QueryType } from "@/lib/api/types";
+import type { AttractionResult, QueryType } from "@/lib/api/types";
 import { Typography } from "@/components/atoms/Typography";
 import {
   Palmtree,
@@ -96,7 +96,7 @@ export default function Home() {
           break;
       }
       setOverallStatus("success");
-    } catch (e) {
+    } catch {
       setOverallStatus("error");
     }
   }, [searchState, structuredQ, semanticQ, imageQ, hybridQ]);
@@ -105,13 +105,13 @@ export default function Home() {
     structuredQ.isLoading || semanticQ.isLoading || imageQ.isLoading || hybridQ.isLoading;
 
   // Derive consolidated results for ResultsPanel based on active hook
-  let consolidated = {
+  const consolidated = {
     aiResponse: null as string | null,
     generatedSql: null as string | null,
-    allResults: [] as any[],
-    structuredResults: [] as any[],
-    semanticResults: [] as any[],
-    imageResults: [] as any[],
+    allResults: [] as AttractionResult[],
+    structuredResults: [] as AttractionResult[],
+    semanticResults: [] as AttractionResult[],
+    imageResults: [] as AttractionResult[],
     totalSources: 0,
     error: null as string | null,
   };

@@ -10,9 +10,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
  */
 export class ApiError extends Error {
   public status: number;
-  public data: any;
+  public data: unknown;
 
-  constructor(message: string, status: number, data?: any) {
+  constructor(message: string, status: number, data?: unknown) {
     super(message);
     this.name = "ApiError";
     this.status = status;
@@ -36,14 +36,28 @@ export async function post<TReq, TRes>(
   });
 
   if (!response.ok) {
-    let errorData = null;
+    let errorData: unknown = null;
     try {
       errorData = await response.json();
     } catch {
       // Ignore if not JSON
     }
+    const fallback = `Request failed: ${response.status} ${response.statusText}`;
+    const detail =
+      typeof errorData === "object" && errorData !== null && "detail" in errorData
+        ? errorData.detail
+        : undefined;
+    const validationMessages = Array.isArray(detail)
+      ? detail.flatMap((item: unknown) =>
+          typeof item === "object" && item !== null && "msg" in item && typeof item.msg === "string"
+            ? [item.msg]
+            : []
+        )
+      : [];
     const message =
-      errorData?.detail || `Request failed: ${response.status} ${response.statusText}`;
+      typeof detail === "string" && detail
+        ? detail
+        : validationMessages.join("; ") || fallback;
     throw new ApiError(message, response.status, errorData);
   }
 

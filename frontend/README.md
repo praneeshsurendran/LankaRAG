@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LankaRAG frontend
 
-## Getting Started
+Next.js App Router dashboard for the LankaRAG tourism search backend. See the [project README](../README.md) for the complete architecture, ingestion and RAG flow, API contracts, configuration, and limitations.
 
-First, run the development server:
+## Run locally
+
+Use Node.js 22.13+ and npm. Start and populate the FastAPI backend using the root README, then run from this directory:
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`. Set the API base URL in `frontend/.env.local` if needed:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```dotenv
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The API client defaults to that localhost URL. Restart development after changing it; for production, set it before building. The backend's `CORS_ORIGINS` must include the frontend's origin.
 
-## Learn More
+## Source layout
 
-To learn more about Next.js, take a look at the following resources:
+- `app/`: the single active routing tree; `page.tsx` orchestrates searches, `layout.tsx` defines metadata and Inter/Outfit fonts, and `globals.css` supplies the theme.
+- `components/`: atoms, molecules, and organisms for the four search modes, image input, and result display.
+- `hooks/`: loading, data, and error state for each query endpoint.
+- `lib/api/`: typed requests/responses, endpoint services, and shared JSON HTTP client.
+- `utils/cn.ts`: class-name merging helper.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The unused `src/app/` Create Next App scaffold was removed. Keep routes in `app/`; `@/*` imports resolve from the frontend root.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Checks and production build
 
-## Deploy on Vercel
+```bash
+npm run lint
+npx tsc --noEmit
+npm run build
+npm start
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The build uses `next/font/google` and needs network access to fetch Inter and Outfit. The backend runs as a separate process.

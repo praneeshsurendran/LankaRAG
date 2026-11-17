@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { UploadCloud, X, Link as LinkIcon, Image as ImageIcon, Loader2, AlertCircle } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { Input } from "@/components/atoms/Input";
@@ -14,23 +14,9 @@ export interface ImageUploaderProps {
 export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [imageLoading, setImageLoading] = useState(false);
-  const [imageError, setImageError] = useState(false);
-
   const isBase64 = value.startsWith("data:image");
 
-  // Reset image load state whenever value changes
-  useEffect(() => {
-    if (value) {
-      setImageLoading(true);
-      setImageError(false);
-    } else {
-      setImageLoading(false);
-      setImageError(false);
-    }
-  }, [value]);
-
-  const processFile = (file: File) => {
+  const processFile = useCallback((file: File) => {
     setError(null);
     if (!["image/jpeg", "image/png", "image/jpg", "image/webp"].includes(file.type)) {
       setError("Only .jpg, .jpeg, .png, and .webp files are supported.");
@@ -53,7 +39,7 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
       setError("Failed to read the file.");
     };
     reader.readAsDataURL(file);
-  };
+  }, [onChange]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -76,7 +62,7 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
         processFile(file);
       }
     },
-    [disabled]
+    [disabled, processFile]
   );
 
   const handleFileSelect = useCallback(
@@ -86,21 +72,13 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
         processFile(file);
       }
     },
-    []
+    [processFile]
   );
 
   const handleClear = () => {
     onChange("");
     setError(null);
-    setImageError(false);
-    setImageLoading(false);
   };
-
-  const isWebpageUrl = Boolean(
-    value &&
-    !isBase64 &&
-    !value.match(/\.(jpeg|jpg|png|webp|gif|svg|avif)($|\?)/i)
-  );
 
   return (
     <div className="space-y-3">
@@ -183,35 +161,7 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
             </Button>
           </div>
 
-          <div className="relative h-40 w-full rounded-lg overflow-hidden bg-[var(--bg-surface)] border border-[var(--border)] flex items-center justify-center">
-            {imageLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10 text-xs text-[var(--text-muted)]">
-                <Loader2 className="w-4 h-4 animate-spin text-[var(--primary)] mr-2" /> Loading preview...
-              </div>
-            )}
-
-            {imageError ? (
-              <div className="flex flex-col items-center justify-center text-center p-3 text-xs text-[var(--danger)]">
-                <AlertCircle className="w-5 h-5 mb-1.5" />
-                <span className="font-semibold">Webpage link detected instead of direct image link</span>
-                <span className="text-[11px] text-[var(--text-muted)] mt-1 max-w-xs leading-tight">
-                  Right-click an image on that webpage & choose <strong>&ldquo;Copy Image Address&rdquo;</strong>, or use the file uploader below.
-                </span>
-              </div>
-            ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={value}
-                alt="Image Preview"
-                className="w-full h-full object-contain"
-                onLoad={() => setImageLoading(false)}
-                onError={() => {
-                  setImageLoading(false);
-                  setImageError(true);
-                }}
-              />
-            )}
-          </div>
+          <ImagePreview key={value} value={value} />
         </div>
       )}
 
@@ -219,6 +169,44 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
         <p className="text-xs text-[var(--danger)] mt-1 flex items-center gap-1">
           <AlertCircle className="w-3.5 h-3.5" /> {error}
         </p>
+      )}
+    </div>
+  );
+}
+
+// Reset preview state by remounting whenever the image input changes.
+function ImagePreview({ value }: { value: string }) {
+  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
+
+  return (
+    <div className="relative h-40 w-full rounded-lg overflow-hidden bg-[var(--bg-surface)] border border-[var(--border)] flex items-center justify-center">
+      {imageLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10 text-xs text-[var(--text-muted)]">
+          <Loader2 className="w-4 h-4 animate-spin text-[var(--primary)] mr-2" /> Loading preview...
+        </div>
+      )}
+
+      {imageError ? (
+        <div className="flex flex-col items-center justify-center text-center p-3 text-xs text-[var(--danger)]">
+          <AlertCircle className="w-5 h-5 mb-1.5" />
+          <span className="font-semibold">Webpage link detected instead of direct image link</span>
+          <span className="text-[11px] text-[var(--text-muted)] mt-1 max-w-xs leading-tight">
+            Right-click an image on that webpage & choose <strong>&ldquo;Copy Image Address&rdquo;</strong>, or use the file uploader below.
+          </span>
+        </div>
+      ) : (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={value}
+          alt="Image Preview"
+          className="w-full h-full object-contain"
+          onLoad={() => setImageLoading(false)}
+          onError={() => {
+            setImageLoading(false);
+            setImageError(true);
+          }}
+        />
       )}
     </div>
   );
